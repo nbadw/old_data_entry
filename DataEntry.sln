@@ -1,0 +1,59 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Web Developer Express 2008
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Data Entry Application", ".", "{B65665C8-6EA9-4E48-86BF-6EFE6E2F2E62}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFramework = "2.0"
+		Debug.AspNetCompiler.VirtualPath = "/DataEntry"
+		Debug.AspNetCompiler.PhysicalPath = "..\DataEntry\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\DataEntry\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/DataEntry"
+		Release.AspNetCompiler.PhysicalPath = "..\DataEntry\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\DataEntry\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "3034"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SJRAtlas.Spatial.Projection", "..\Projection\Projection\SJRAtlas.Spatial.Projection.csproj", "{9E814735-DA1F-4A98-8E74-1FDE2F971224}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SJRAtlas.Spatial.Projection.Test", "..\Projection\SJRAtlas.Spatial.Projection.Test\SJRAtlas.Spatial.Projection.Test.csproj", "{568E736C-1583-4113-8864-5138E100360C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|.NET = Debug|.NET
+		Debug|Any CPU = Debug|Any CPU
+		Release|.NET = Release|.NET
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B65665C8-6EA9-4E48-86BF-6EFE6E2F2E62}.Debug|.NET.ActiveCfg = Debug|.NET
+		{B65665C8-6EA9-4E48-86BF-6EFE6E2F2E62}.Debug|.NET.Build.0 = Debug|.NET
+		{B65665C8-6EA9-4E48-86BF-6EFE6E2F2E62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B65665C8-6EA9-4E48-86BF-6EFE6E2F2E62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B65665C8-6EA9-4E48-86BF-6EFE6E2F2E62}.Release|.NET.ActiveCfg = Debug|.NET
+		{B65665C8-6EA9-4E48-86BF-6EFE6E2F2E62}.Release|.NET.Build.0 = Debug|.NET
+		{B65665C8-6EA9-4E48-86BF-6EFE6E2F2E62}.Release|Any CPU.ActiveCfg = Debug|.NET
+		{9E814735-DA1F-4A98-8E74-1FDE2F971224}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{9E814735-DA1F-4A98-8E74-1FDE2F971224}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E814735-DA1F-4A98-8E74-1FDE2F971224}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E814735-DA1F-4A98-8E74-1FDE2F971224}.Release|.NET.ActiveCfg = Release|Any CPU
+		{9E814735-DA1F-4A98-8E74-1FDE2F971224}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E814735-DA1F-4A98-8E74-1FDE2F971224}.Release|Any CPU.Build.0 = Release|Any CPU
+		{568E736C-1583-4113-8864-5138E100360C}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{568E736C-1583-4113-8864-5138E100360C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{568E736C-1583-4113-8864-5138E100360C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{568E736C-1583-4113-8864-5138E100360C}.Release|.NET.ActiveCfg = Release|Any CPU
+		{568E736C-1583-4113-8864-5138E100360C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{568E736C-1583-4113-8864-5138E100360C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,60 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="dsqryElectrofishingDataPlusEstimates" targetNamespace="http://www.tempuri.org/dsqryElectrofishingDataPlusEstimates.xsd" xmlns:mstns="http://www.tempuri.org/dsqryElectrofishingDataPlusEstimates.xsd" xmlns="http://www.tempuri.org/dsqryElectrofishingDataPlusEstimates.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:element name="dsqryElectrofishingDataPlusEstimates" msdata:IsDataSet="true">
+    <xs:complexType>
+      <xs:choice maxOccurs="unbounded">
+        <xs:element name="qryElectrofishingDataPlusEstimates">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Agency2Cd" type="xs:string" minOccurs="0" />
+              <xs:element name="Agency2Contact" type="xs:string" minOccurs="0" />
+              <xs:element name="Agency2SiteID" type="xs:string" minOccurs="0" />
+              <xs:element name="AgencyCd" type="xs:string" minOccurs="0" />
+              <xs:element name="AgencySiteID" type="xs:string" minOccurs="0" />
+              <xs:element name="AquaticActivityID" type="xs:int" minOccurs="0" />
+              <xs:element name="AquaticSiteDesc" type="xs:string" minOccurs="0" />
+              <xs:element name="AquaticSiteID" type="xs:int" minOccurs="0" />
+              <xs:element name="Area_m2" type="xs:float" minOccurs="0" />
+              <xs:element name="AutoCalculatedInd" type="xs:boolean" minOccurs="0" />
+              <xs:element name="AveForkLength_cm" type="xs:double" minOccurs="0" />
+              <xs:element name="AveTotalLength_cm" type="xs:double" minOccurs="0" />
+              <xs:element name="AveWeight_gm" type="xs:double" minOccurs="0" />
+              <xs:element name="Biomass" type="xs:double" minOccurs="0" />
+              <xs:element name="Comments" type="xs:string" minOccurs="0" />
+              <xs:element name="Date" type="xs:string" minOccurs="0" />
+              <xs:element name="Density" type="xs:double" minOccurs="0" />
+              <xs:element name="DrainageCd" type="xs:string" minOccurs="0" />
+              <xs:element name="EFDataID" msdata:AutoIncrement="true" type="xs:int" minOccurs="0" />
+              <xs:element name="FishAgeClass" type="xs:string" minOccurs="0" />
+              <xs:element name="FishSpecies" type="xs:string" minOccurs="0" />
+              <xs:element name="FishSpeciesCd" type="xs:string" minOccurs="0" />
+              <xs:element name="Formula" type="xs:string" minOccurs="0" />
+              <xs:element name="HabitatDesc" type="xs:string" minOccurs="0" />
+              <xs:element name="Method" type="xs:string" minOccurs="0" />
+              <xs:element name="NoSweeps" type="xs:short" minOccurs="0" />
+              <xs:element name="PercentClipped" type="xs:double" minOccurs="0" />
+              <xs:element name="PermitNo" type="xs:string" minOccurs="0" />
+              <xs:element name="PHS" type="xs:double" minOccurs="0" />
+              <xs:element name="RelativeSizeClass" type="xs:string" minOccurs="0" />
+              <xs:element name="Sweep1NoFish" type="xs:double" minOccurs="0" />
+              <xs:element name="Sweep1Time_s" type="xs:double" minOccurs="0" />
+              <xs:element name="Sweep2NoFish" type="xs:double" minOccurs="0" />
+              <xs:element name="Sweep2Time_s" type="xs:double" minOccurs="0" />
+              <xs:element name="Sweep3NoFish" type="xs:double" minOccurs="0" />
+              <xs:element name="Sweep3Time_s" type="xs:double" minOccurs="0" />
+              <xs:element name="Sweep4NoFish" type="xs:double" minOccurs="0" />
+              <xs:element name="Sweep4Time_s" type="xs:double" minOccurs="0" />
+              <xs:element name="Sweep5NoFish" type="xs:double" minOccurs="0" />
+              <xs:element name="Sweep5Time_s" type="xs:double" minOccurs="0" />
+              <xs:element name="Sweep6NoFish" type="xs:double" minOccurs="0" />
+              <xs:element name="Sweep6Time_s" type="xs:double" minOccurs="0" />
+              <xs:element name="TotalNoFish" type="xs:double" minOccurs="0" />
+              <xs:element name="WaterBodyID" type="xs:int" minOccurs="0" />
+              <xs:element name="WaterBodyName" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

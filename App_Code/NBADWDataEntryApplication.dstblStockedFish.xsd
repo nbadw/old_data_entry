@@ -1,0 +1,45 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="dstblStockedFish" targetNamespace="http://www.tempuri.org/dstblStockedFish.xsd" xmlns:mstns="http://www.tempuri.org/dstblStockedFish.xsd" xmlns="http://www.tempuri.org/dstblStockedFish.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:element name="dstblStockedFish" msdata:IsDataSet="true">
+    <xs:complexType>
+      <xs:choice maxOccurs="unbounded">
+        <xs:element name="tblStockedFish">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="AgeUnitOfMeasure" type="xs:string" minOccurs="0" />
+              <xs:element name="AppliedMarkCd" type="xs:int" minOccurs="0" />
+              <xs:element name="AquaticActivityID" type="xs:int" minOccurs="0" />
+              <xs:element name="AveLength_cm" type="xs:double" minOccurs="0" />
+              <xs:element name="AveWeight_gm" type="xs:double" minOccurs="0" />
+              <xs:element name="FishAge" type="xs:string" minOccurs="0" />
+              <xs:element name="FishAgeClass" type="xs:string" minOccurs="0" />
+              <xs:element name="FishFacilityID" type="xs:int" minOccurs="0" />
+              <xs:element name="FishLengthType" type="xs:string" minOccurs="0" />
+              <xs:element name="FishMatingID" type="xs:int" minOccurs="0" />
+              <xs:element name="FishSpeciesCd" type="xs:string" minOccurs="0" />
+              <xs:element name="FishStockID" type="xs:int" minOccurs="0" />
+              <xs:element name="FishStockingID" msdata:AutoIncrement="true" type="xs:int" />
+              <xs:element name="FishStrainCd" type="xs:int" minOccurs="0" />
+              <xs:element name="FishTankNo" type="xs:string" minOccurs="0" />
+              <xs:element name="LengthRange_cm" type="xs:string" minOccurs="0" />
+              <xs:element name="NoFish" type="xs:int" minOccurs="0" />
+              <xs:element name="NoFishMeasured" type="xs:int" minOccurs="0" />
+              <xs:element name="oldAquaticActivityID" type="xs:int" minOccurs="0" />
+              <xs:element name="SatelliteRearedInd" type="xs:boolean" minOccurs="0" />
+              <xs:element name="siteuseid" type="xs:int" minOccurs="0" />
+              <xs:element name="Source" type="xs:string" minOccurs="0" />
+              <xs:element name="WeightRange_gm" type="xs:string" minOccurs="0" />
+              <xs:element name="OtherFishFacility" type="xs:string" minOccurs="0" />
+              <xs:element name="OtherStock" type="xs:string" minOccurs="0" />
+              <xs:element name="BroodstockInd" type="xs:boolean" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+    <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:tblStockedFish" />
+      <xs:field xpath="mstns:FishStockingID" />
+    </xs:unique>
+  </xs:element>
+</xs:schema>

@@ -1,0 +1,132 @@
+<%@ Register TagPrefix="esri" Namespace="ESRI.ArcGIS.Server.WebControls" Assembly="ESRI.ArcGIS.Server.WebControls, Version=9.1.0.722, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86" %>
+<%@ Page language="c#" Inherits="ArcServer3.Map" CodeFile="Map.aspx.cs" %>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" >
+<HTML>
+	<HEAD>
+		<title>Map Viewer</title>
+		<script>
+		
+	 
+		</script>
+		<meta content="False" name="vs_snapToGrid">
+		<meta content="Microsoft Visual Studio .NET 7.1" name="GENERATOR">
+		<meta content="C#" name="CODE_LANGUAGE">
+		<meta content="JavaScript" name="vs_defaultClientScript">
+		<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+		<script language="Javascript">
+		
+				// global placeholders for popup windows
+			var idWin;
+			var sessionId;
+
+					// Enable Identify functionality by setting the mode and toolbar parameters
+			function ID() 
+			{
+				MapPoint('Map1','Identify');
+				// Set the event to the special identify handler
+					// Bypasses the default postback process since no new map is needed
+				var iddiv = document.getElementById("MapDiv_Map1");
+				if (iddiv!=null) iddiv.onmousedown = MapIdClick;
+			}
+			
+				// Point action for Identify
+				// Does not do a postback, but opens the Identify window to process request
+			function MapIdClick(e) {
+				getXY(e);
+				getMapDiv(e);
+				ShowLoading();
+				var blurb = adjustMapCoords();
+				
+				var f = document.forms[0];
+				f.minx.value=zleft;
+				f.miny.value=ztop;
+				var today = new Date();
+				var rand = today.getTime();
+				var winId = "IdentifyWindow_" + sessionId;
+				var url = "Identify.aspx?idx=" + zleft + "&idy=" + ztop + "&idtype=new&random=" + rand;
+				idWin = window.open(url, winId, "width=600,height=450,scrollbars,status");
+				return false;
+			}
+			
+			
+		      
+				// Set up various items when page is loaded
+			function start() 
+			{
+				var f = document.forms[0];
+				tool = f.elements['Map1_mode'].value;
+			}
+			
+			// JavaScript function called at unload
+			// Used to close any windows specifically opened by this page, if still open			
+			function shutDown() {
+				if ((idWin!=null) && (!idWin.closed)) idWin.close();
+			}		
+		</script>
+	</HEAD>
+	<body bgColor="white" onload="start();" onunload="shutDown()">
+		<form id="WebForm" method="post" runat="server">
+			<!-- Title and Logo -->
+			<!-- Map --><esri:map id="Map1" style="Z-INDEX: 101; LEFT: 192px; POSITION: absolute; TOP: 48px" runat="server"
+				DataFrame="Overview" UseMIMEData="True" Width="688px" Height="507px" BorderStyle="Solid" BorderColor="LightSteelBlue"
+				BorderWidth="12px" ServerObject="DEAppMap" Host="D60-BRASSETNO" AutoFirstDraw="False"></esri:map>
+			<!-- TOC -->
+			<esri:toc id="Toc1" style="Z-INDEX: 102; LEFT: 16px; POSITION: absolute; TOP: 48px" runat="server"
+				UseMIMEData="True" Width="168px" Height="309px" BorderStyle="Solid" BorderColor="LightSteelBlue"
+				BorderWidth="3px" Font-Size="XX-Small" Font-Names="Arial" BuddyControl="Map1"></esri:toc>
+			<!-- Overview --><esri:overviewmap id="OverviewMap1" style="Z-INDEX: 103; LEFT: 16px; POSITION: absolute; TOP: 360px"
+				runat="server" UseMIMEData="True" Width="168px" Height="173px" BorderStyle="Solid" BorderColor="LightSteelBlue"
+				BorderWidth="3px" ServerObject="DEAppMapOverview" Host="D60-BRASSETNO" BuddyControl="Map1" DragBoxColor="Red" DragLineWidth="5"></esri:overviewmap>
+			<!-- Pan UpperLeft button --><asp:imagebutton id="imgPanUpperLeft" style="Z-INDEX: 104; LEFT: 192px; POSITION: absolute; TOP: 48px"
+				runat="server" Width="18px" Height="18px" ImageUrl="images/upperleft.gif" CommandName="UpperLeft" AlternateText="Pan Upper Left"></asp:imagebutton>
+			<!-- Pan Up button --><asp:imagebutton id="imgPanUp" style="Z-INDEX: 105; LEFT: 536px; POSITION: absolute; TOP: 48px" runat="server"
+				Width="23px" Height="11px" ImageUrl="images/up.gif" CommandName="Up" AlternateText="Pan Up"></asp:imagebutton>
+			<!-- Pan UpperRight button--><asp:imagebutton id="imgPanUpperRight" style="Z-INDEX: 106; LEFT: 864px; POSITION: absolute; TOP: 48px"
+				runat="server" Width="18px" Height="18px" ImageUrl="images/upperright.gif" CommandName="UpperRight" AlternateText="Pan Upper Right"></asp:imagebutton>
+			<!-- Pan Right button --><asp:imagebutton id="imgPanRight" style="Z-INDEX: 107; LEFT: 872px; POSITION: absolute; TOP: 296px"
+				runat="server" Width="11px" Height="23px" ImageUrl="images/right.gif" CommandName="Right" AlternateText="Pan Right"></asp:imagebutton>
+			<!-- Pan Left button --><asp:imagebutton id="imgPanLeft" style="Z-INDEX: 108; LEFT: 192px; POSITION: absolute; TOP: 288px"
+				runat="server" Width="11px" Height="23px" ImageUrl="images/left.gif" CommandName="Left" AlternateText="Pan Left"></asp:imagebutton>
+			<!-- Pan LowerLeft button --><asp:imagebutton id="imgPanLowerLeft" style="Z-INDEX: 109; LEFT: 192px; POSITION: absolute; TOP: 544px"
+				runat="server" Width="18px" Height="18px" ImageUrl="images/lowerleft.gif" CommandName="LowerLeft" AlternateText="Pan Lower Left"></asp:imagebutton>
+			<!-- Pan Down button --><asp:imagebutton id="imgPanDown" style="Z-INDEX: 110; LEFT: 535px; POSITION: absolute; TOP: 549px"
+				runat="server" Width="23px" Height="11px" ImageUrl="images/down.gif" CommandName="Down" AlternateText="Pan Down"></asp:imagebutton>
+			<!-- Pan LowerRight button --><asp:imagebutton id="imgPanLowerRight" style="Z-INDEX: 111; LEFT: 864px; POSITION: absolute; TOP: 537px"
+				runat="server" Width="18px" Height="18px" ImageUrl="images/lowerright.gif" CommandName="LowerRight" AlternateText="Pan Lower Right"></asp:imagebutton>
+			<!-- Toolbar --><esri:toolbar id="Toolbar1" style="Z-INDEX: 112; LEFT: 288px; POSITION: absolute; TOP: 8px" runat="server"
+				Width="232px" Height="32px" ToolbarItemHoverStyle-Font-Size="X-Small" ToolbarItemHoverStyle-Font-Names="Arial"
+				ToolbarItemHoverStyle-Font-Italic="True" ToolbarItemHoverStyle-Font-Bold="True" ToolbarItemHoverStyle-BackColor="LightSteelBlue"
+				ToolbarStyle="ImageOnly" CurrentTool="ZoomIn">
+				<ToolbarItems>
+					<esri:Tool ToolTip="Zoom In" DefaultImage="Images/zoomin.GIF" ServerToolActionAssembly="ESRI.ArcGIS.Server.WebControls"
+						ClientToolAction="DragRectangle" ServerToolActionClass="ESRI.ArcGIS.Server.WebControls.Tools.MapZoomIn"
+						Name="ZoomIn" SelectedImage="Images/zoominD.gif" HoverImage="Images/zoominU.gif"></esri:Tool>
+					<esri:Tool ToolTip="Zoom Out" DefaultImage="Images/zoomout.GIF" ServerToolActionAssembly="ESRI.ArcGIS.Server.WebControls"
+						ClientToolAction="DragRectangle" ServerToolActionClass="ESRI.ArcGIS.Server.WebControls.Tools.MapZoomOut"
+						Name="ZoomOut" SelectedImage="Images/zoomoutD.gif" HoverImage="Images/zoomoutU.gif"></esri:Tool>
+					<esri:Tool ToolTip="Pan" DefaultImage="Images/pan.gif" ServerToolActionAssembly="ESRI.ArcGIS.Server.WebControls"
+						ClientToolAction="DragImage" ServerToolActionClass="ESRI.ArcGIS.Server.WebControls.Tools.MapPan"
+						Name="Pan" SelectedImage="Images/panD.gif" HoverImage="Images/panU.gif"></esri:Tool>
+					<esri:Command ToolTip="Full Extent" DefaultImage="Images/fullext.gif" Name="FullExtent" SelectedImage="Images/fullextD.gif"
+						HoverImage="Images/fullextU.gif"></esri:Command>
+					<esri:Command ToolTip="Zoom Back to Previous Extent" DefaultImage="Images/back.gif" Name="ZoomBack"
+						SelectedImage="Images/backD.gif" HoverImage="Images/backU.gif"></esri:Command>
+					<esri:Command ToolTip="Zoom to Next Extent" DefaultImage="Images/forward.gif" Name="ZoomNext"
+						SelectedImage="Images/forwardD.gif" HoverImage="Images/forwardU.gif"></esri:Command>
+					<esri:Tool ToolTip="Identify" DefaultImage="Images/identify.gif" ClientToolAction="ID()" Name="Identify"
+						SelectedImage="Images/identifyD.gif" HoverImage="Images/identifyU.gif"></esri:Tool>
+				</ToolbarItems>
+				<BuddyControls>
+					<esri:BuddyControl Name="Map1"></esri:BuddyControl>
+				</BuddyControls>
+			</esri:toolbar>
+			<!-- Impersonation control --><esri:impersonation id="Impersonation1" style="Z-INDEX: 113; LEFT: 24px; POSITION: absolute; TOP: 616px"
+				runat="server" Identity="EVPMDMHMGMPZLPGVGNLCQIYBGXLKSVOPDMPZ"></esri:impersonation>
+			<!-- Scalebar --><esri:scalebar id="ScaleBar1" style="Z-INDEX: 114; LEFT: 192px; POSITION: absolute; TOP: 576px"
+				runat="server" UseMIMEData="True" Width="688px" Height="48px" BuddyControl="Map1" BarStyle="Alternating" Divisions="1"
+				DivisionsBeforeZero="0" BarHeight="6" Division="1" BarUnits="Kilometers" BarFont="Arial, 8.25pt"></esri:scalebar>
+			<!-- North Arrow --><esri:northarrow id="NorthArrow1" style="Z-INDEX: 115; LEFT: 31px; POSITION: absolute; TOP: 538px"
+				runat="server" Width="64px" Height="60px" BuddyControl="Map1" Size="30"></esri:northarrow></form>
+		<!--StartFragment -->
+	</body>
+</HTML>

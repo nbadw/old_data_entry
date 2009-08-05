@@ -1,0 +1,30 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="dstblEnvPlanning" targetNamespace="http://www.tempuri.org/dstblEnvPlanning.xsd" xmlns:mstns="http://www.tempuri.org/dstblEnvPlanning.xsd" xmlns="http://www.tempuri.org/dstblEnvPlanning.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:element name="dstblEnvPlanning" msdata:IsDataSet="true">
+    <xs:complexType>
+      <xs:choice maxOccurs="unbounded">
+        <xs:element name="tblEnvironmentalPlanning">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ActionCompletionDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="ActionPriority" type="xs:short" minOccurs="0" />
+              <xs:element name="ActionRequired" type="xs:string" minOccurs="0" />
+              <xs:element name="ActionTargetDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="AquaticActivityID" type="xs:int" minOccurs="0" />
+              <xs:element name="EnvPlanningID" msdata:AutoIncrement="true" type="xs:int" />
+              <xs:element name="FollowUpCompletionDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="FollowUpRequired" type="xs:boolean" minOccurs="0" />
+              <xs:element name="FollowUpTargetDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="Issue" type="xs:string" minOccurs="0" />
+              <xs:element name="IssueCategory" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+    <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:tblEnvironmentalPlanning" />
+      <xs:field xpath="mstns:EnvPlanningID" />
+    </xs:unique>
+  </xs:element>
+</xs:schema>

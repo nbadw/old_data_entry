@@ -1,0 +1,34 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="dsqryElectrofishingWaterMeasurements" targetNamespace="http://www.tempuri.org/dsqryElectrofishingWaterMeasurements.xsd" xmlns:mstns="http://www.tempuri.org/dsqryElectrofishingWaterMeasurements.xsd" xmlns="http://www.tempuri.org/dsqryElectrofishingWaterMeasurements.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:element name="dsqryElectrofishingWaterMeasurements" msdata:IsDataSet="true">
+    <xs:complexType>
+      <xs:choice maxOccurs="unbounded">
+        <xs:element name="qryElectrofishingWaterMeasurements">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Agency2Cd" type="xs:string" minOccurs="0" />
+              <xs:element name="Agency2Contact" type="xs:string" minOccurs="0" />
+              <xs:element name="Agency2SiteID" type="xs:string" minOccurs="0" />
+              <xs:element name="AgencyCd" type="xs:string" minOccurs="0" />
+              <xs:element name="AgencySiteID" type="xs:string" minOccurs="0" />
+              <xs:element name="AquaticActivityID" type="xs:int" minOccurs="0" />
+              <xs:element name="AquaticMethod" type="xs:string" minOccurs="0" />
+              <xs:element name="AquaticSiteID" type="xs:int" minOccurs="0" />
+              <xs:element name="Comments" type="xs:string" minOccurs="0" />
+              <xs:element name="Date" type="xs:string" minOccurs="0" />
+              <xs:element name="DrainageCd" type="xs:string" minOccurs="0" />
+              <xs:element name="Instrument" type="xs:string" minOccurs="0" />
+              <xs:element name="Measure" type="xs:string" minOccurs="0" />
+              <xs:element name="TimeofDay" type="xs:string" minOccurs="0" />
+              <xs:element name="UnitOfMeasure" type="xs:string" minOccurs="0" />
+              <xs:element name="WaterBodyID" type="xs:int" minOccurs="0" />
+              <xs:element name="WaterBodyName" type="xs:string" minOccurs="0" />
+              <xs:element name="WaterMeasurementID" msdata:AutoIncrement="true" type="xs:int" minOccurs="0" />
+              <xs:element name="Measurement" type="xs:float" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

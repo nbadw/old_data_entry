@@ -1,0 +1,564 @@
+/*
+COPYRIGHT 1995-2004 ESRI
+
+TRADE SECRETS: ESRI PROPRIETARY AND CONFIDENTIAL
+Unpublished material - all rights reserved under the 
+Copyright Laws of the United States.
+
+For additional information, contact:
+Environmental Systems Research Institute, Inc.
+Attn: Contracts Dept
+380 New York Street
+Redlands, California, USA 92373
+
+email: contracts@esri.com
+*/
+using System;
+using System.Collections;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Diagnostics;
+using System.Web;
+using System.Web.SessionState;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.HtmlControls;
+using ESRI.ArcGIS.Server.WebControls;
+using ESRI.ArcGIS.Carto;
+using ESRI.ArcGIS.Geometry;
+using ESRI.ArcGIS.Server;
+using ESRI.ArcGIS.Display;
+
+namespace ArcServer3
+{
+	/// <summary>
+	/// Summary description for _Default.
+	/// </summary>
+	public partial class Map : System.Web.UI.Page
+	{
+
+	
+		private ArrayList ExtentList = new ArrayList();
+		private ArrayList m_extenthistory;
+		private Extent m_lastextent;
+		private bool isPooled = false;
+		private string sessionId = "";
+		private string m_MapDescriptSessName = "";
+
+		public const int PAN_PERCENT = 50;
+		public const int MAXIMUM_EXTENT_HISTORY_COUNT = 10;
+
+		protected void Page_Load(object sender, System.EventArgs e)
+		{
+			// Check parameters of MapControl
+			
+			// If there is no Host or ServerObject defined, 
+			// then there is no point to continuing since there will be no map to display
+			if ( (Map1.Host == null) || (Map1.Host == String.Empty) ) 
+			{
+				callErrorPage("Host property not defined for the Map control.", null);
+			}
+			if ( (Map1.ServerObject == null) || (Map1.ServerObject == String.Empty) || (Map1.ServerObject == "(none)") ) 
+			{
+				callErrorPage("ServerObject property not defined for the Map control.", null);
+			}
+			//if (!Map1.AutoFirstDraw) 
+			//{
+			//	callErrorPage("The property AutoFirstDraw of the Map WebControl must be set to true for this application to run.", null);
+			//}
+			// check if the server object can be accessed
+			ESRI.ArcGIS.Server.WebControls.ServerConnection connection = Map1.ServerConnection;
+			if ( connection == null )
+				callErrorPage("Invalid ServerConnection.", null);
+
+			
+			// check if the server object is pooled
+			isPooled = connection.IsServerObjectPooled(Map1.ServerObject,"MapServer");
+
+			// Is this a PostBack or just started
+			if ( !Page.IsPostBack ) 
+			{
+				// Is this a new session?
+				//if ( Session.IsNewSession ) 
+				{
+
+					// ADD CODE AFTER OPEN BLOCK BRACKET AFTER if ( session.IsNewSession )
+					using (WebMap webMap = Map1.CreateWebMap())
+					{
+						IServerContext serverContext = webMap.ServerContext;
+						IMapServer mapServer = webMap.MapServer;
+						IMapServerObjects mapObj = mapServer as IMapServerObjects;
+
+						// app will pass the coordinate system, units, x, and y
+
+						// sample NAD83 (CSRS)
+						//string strXCoord = "2513928.73";
+						//string strYCoord = "7517796.67";
+						//string strUnits = "Meters";
+						//string strCoordSys = "NAD83 (CSRS) NB Stereographic";
+
+						// sample WGS84
+						//string strXCoord = "-66.8875";
+						//string strYCoord = "47.83472";
+						//string strUnits = "Decimal Degrees";
+						//string strCoordSys = "WGS84";
+						
+						Debug.WriteLine("Variables are");
+						Debug.WriteLine("X: "+Session["XCoord"].ToString());
+						Debug.WriteLine("Y: "+Session["YCoord"].ToString());
+						Debug.WriteLine("Coord: "+Session["CoordSys"].ToString());
+						Debug.WriteLine("Unit: "+Session["Units"].ToString());
+
+						string strXCoord = Session["XCoord"].ToString();
+						string strYCoord = Session["YCoord"].ToString();
+						string strUnits =  Session["Units"].ToString();
+						string strCoordSys = Session["CoordSys"].ToString();
+						string strSource = Session["CoordSource"].ToString();
+						
+						ISpatialReferenceFactory pSpatRefFact = serverContext.CreateObject("esriGeometry.SpatialReferenceEnvironment") as ISpatialReferenceFactory;
+						IProjectedCoordinateSystem pNBSystem = pSpatRefFact.CreateProjectedCoordinateSystem(2036);
+
+						// declare variables
+						string strCoordSysType;
+						IGeographicCoordinateSystem geoCoordSystem = serverContext.CreateObject("esriGeometry.GeographicCoordinateSystem") as IGeographicCoordinateSystem;
+						IProjectedCoordinateSystem prjCoordSystem = serverContext.CreateObject("esriGeometry.ProjectedCoordinateSystem") as IProjectedCoordinateSystem;
+						double dblXCoord = 0;
+						double dblYCoord = 0; 
+						double dblXDegrees;
+						double dblXMinutes;
+						double dblXSeconds;
+						double dblYDegrees;
+						double dblYMinutes;
+						double dblYSeconds;
+					
+						bool mustProject = true;
+	
+						// determine whether coordinate system is geograohic or projected and convert coordinates
+						
+						//if ((strCoordSys == "WGS84") || (strCoordSys == "NAD27") || (strCoordSys == "NAD83"))
+						if (strSource == "GPS")
+						{
+							strCoordSysType = "Geographic";
+
+							switch (strCoordSys)
+							{
+								case "WGS84":
+									geoCoordSystem = pSpatRefFact.CreateGeographicCoordinateSystem(4326);
+									break;
+								case "NAD83":
+									geoCoordSystem = pSpatRefFact.CreateGeographicCoordinateSystem(4269);
+									break;
+							}
+
+							switch (strUnits)
+							{
+								case "Decimal Degrees":
+									dblXCoord = Convert.ToDouble(strXCoord);
+									dblYCoord = Convert.ToDouble(strYCoord);
+									break;
+
+								case "Degrees Decimal Minutes":
+									dblXDegrees = Convert.ToDouble(strXCoord.Substring(0,3));
+									dblXMinutes = Convert.ToDouble(strXCoord.Substring(4,(strXCoord.Length-4)));
+									dblXCoord = dblXDegrees + -1*(dblXMinutes/60);
+									System.Diagnostics.Debug.WriteLine ("X = " + dblXCoord);
+
+									dblYDegrees = Convert.ToDouble(strYCoord.Substring(0,2));
+									dblYMinutes = Convert.ToDouble(strYCoord.Substring(3,strYCoord.Length-3));
+									dblYCoord = dblYDegrees + (dblYMinutes/60);
+									System.Diagnostics.Debug.WriteLine ("Y = " + dblYCoord);
+									break;
+
+								case "Degrees Minutes Seconds":
+									dblXDegrees = Convert.ToDouble(strXCoord.Substring(0,3));
+									dblXMinutes = Convert.ToDouble(strXCoord.Substring(4,2));
+									dblXSeconds = Convert.ToDouble(strXCoord.Substring(7,2));
+									dblXCoord = dblXDegrees + -1*((dblXMinutes + (dblXSeconds/60))/60);
+									System.Diagnostics.Debug.WriteLine ("X = " + dblXCoord);
+
+									dblYDegrees = Convert.ToDouble(strYCoord.Substring(0,2));
+									dblYMinutes = Convert.ToDouble(strYCoord.Substring(3,2));
+									dblYSeconds = Convert.ToDouble(strYCoord.Substring(6,2));
+									dblYCoord = dblYDegrees + ((dblYMinutes + (dblYSeconds/60))/60);
+									System.Diagnostics.Debug.WriteLine ("Y = " + dblYCoord);
+									break;
+							}
+						}
+						else
+						{
+							strCoordSysType = "Projected";
+
+							switch (strCoordSys)
+							{
+								case "NAD83 (CSRS) NB Stereographic":
+									mustProject = false;
+									break;
+								case "ATS77 NB Stereographic":
+									prjCoordSystem = pSpatRefFact.CreateProjectedCoordinateSystem(2200);
+									break;
+								case "UTM-NAD27 ZONE 19":
+									prjCoordSystem = pSpatRefFact.CreateProjectedCoordinateSystem(26719);
+									break;
+								case "UTM-NAD27 ZONE 20":
+									prjCoordSystem = pSpatRefFact.CreateProjectedCoordinateSystem(26720);
+									break;
+								case "UTM-NAD83 ZONE 19":
+									prjCoordSystem = pSpatRefFact.CreateProjectedCoordinateSystem(26919);
+									break;
+								case "UTM-NAD83 ZONE 20":
+									prjCoordSystem = pSpatRefFact.CreateProjectedCoordinateSystem(26920);
+									break;
+							}
+
+							dblXCoord = Convert.ToDouble(strXCoord);
+							dblYCoord = Convert.ToDouble(strYCoord);
+							
+						}
+
+
+						// create the point and project if necessary
+						IPoint pPoint = serverContext.CreateObject("esriGeometry.Point") as IPoint;
+								
+						pPoint.PutCoords(dblXCoord,dblYCoord);
+
+						if (mustProject)
+						{
+							if (strCoordSysType == "Projected")
+								pPoint.SpatialReference = prjCoordSystem;
+							else
+								pPoint.SpatialReference = geoCoordSystem;
+
+							pPoint.Project(pNBSystem);
+						}
+
+						// get the point's envelope and expand - used for setting the draw extent
+						IEnvelope pEnv = pPoint.Envelope;
+						
+						pEnv.Expand(100000,100000,false);						
+						
+
+						//Create marker symbol
+						ISimpleMarkerSymbol pSMS = serverContext.CreateObject("esriDisplay.SimpleMarkerSymbol") as ISimpleMarkerSymbol;
+						IRgbColor pColor = serverContext.CreateObject("esriDisplay.RgbColor") as IRgbColor;
+						pColor.Red = 255;
+						pColor.Green = 0;
+						pColor.Blue = 0;
+						pSMS.Color = pColor;
+						pSMS.Size = 10;
+
+						// create the graphic
+						IGraphicElements pGraphics = serverContext.CreateObject("esriCarto.GraphicElements") as IGraphicElements;
+						IMarkerElement pMarkerE = serverContext.CreateObject("esriCarto.MarkerElement") as IMarkerElement;
+						IElement pElement = pMarkerE as IElement;
+
+						pElement.Geometry = pPoint;
+						pMarkerE.Symbol = pSMS;
+						pGraphics.Add (pMarkerE as IGraphicElement);
+
+
+						IMapDescription mapDesc = webMap.MapDescription;
+						mapDesc.CustomGraphics = pGraphics;
+
+						// EXISTING TEMPLATE CODE
+						// Save extent history to Session
+						m_extenthistory = new ArrayList();
+						m_extenthistory.Add(Map1.Extent);
+						Session.Add("extenthistory", m_extenthistory);
+						Session.Add("index",0);
+						m_lastextent = Map1.Extent;
+						// END OF EXISTING TEMPLATE CODE
+
+						webMap.DrawExtent(pEnv);
+
+						serverContext.ReleaseContext();
+					}
+				}
+			}
+
+			//else
+			{
+				// make sure that the session is still going, if not, display error page
+				if (Session["extenthistory"]==null) 
+					callErrorPage("Your session has timed out.", null);
+			}
+			
+			sessionId = Session.SessionID;
+			string scriptString = "\n<script language=javascript>sessionId = '" + sessionId + "';</script>\n";
+			Page.RegisterStartupScript("SessionIdScript", scriptString);
+			// get name of session object holding map description
+			string pagePath = Page.Request.FilePath;
+			string pageName = "";
+			int lastSlash = pagePath.LastIndexOf("/");
+			if (lastSlash>-1) pageName = pagePath.Substring(lastSlash+1);
+			m_MapDescriptSessName = pageName + Map1.ID + "_md";
+
+		}
+
+		/// <summary>
+		/// Handles unhandled exceptions in the page.
+		/// </summary>
+		protected void Page_Error(object sender, System.EventArgs e) 
+		{
+			Exception exception = Server.GetLastError();
+			Server.ClearError();
+			callErrorPage("Page_Error", exception);
+		}
+
+		#region Web Form Designer generated code
+		override protected void OnInit(EventArgs e)
+		{
+			//
+			// CODEGEN: This call is required by the ASP.NET Web Form Designer.
+			//
+			InitializeComponent();
+			base.OnInit(e);
+		}
+		
+		/// <summary>
+		/// Required method for Designer support - do not modify
+		/// the contents of this method with the code editor.
+		/// </summary>
+		private void InitializeComponent()
+		{    
+			this.Map1.ContentsChanged += new ESRI.ArcGIS.Server.WebControls.ContentsChangeEventHandler(this.MapChanged);
+			this.imgPanUpperLeft.Click += new System.Web.UI.ImageClickEventHandler(this.pan_Click);
+			this.imgPanUp.Click += new System.Web.UI.ImageClickEventHandler(this.pan_Click);
+			this.imgPanUpperRight.Click += new System.Web.UI.ImageClickEventHandler(this.pan_Click);
+			this.imgPanLeft.Click += new System.Web.UI.ImageClickEventHandler(this.pan_Click);
+			this.imgPanLowerLeft.Click += new System.Web.UI.ImageClickEventHandler(this.pan_Click);
+			this.imgPanDown.Click += new System.Web.UI.ImageClickEventHandler(this.pan_Click);
+			this.imgPanLowerRight.Click += new System.Web.UI.ImageClickEventHandler(this.pan_Click);
+			this.Toolbar1.CommandClick += new ESRI.ArcGIS.Server.WebControls.ToolbarCommandClickEventHandler(this.Toolbar1_CommandClick);
+			this.ID = "MapForm";
+
+		}
+		#endregion
+
+		#region Map Viewer Methods - - - TODO: Add additional methods here
+
+		/// <summary>
+		/// Directional Panning for the Map
+		/// </summary>
+		private void pan_Click(object sender, System.Web.UI.ImageClickEventArgs e)
+		{
+			try 
+			{
+				// Find Pan image control to get the direccion from the control.CommandName
+				ImageButton imgBtnPanDirection = sender as ImageButton;
+				string direction = imgBtnPanDirection.CommandName;
+
+				// Convert the pan direction to the web controls direction enumeration
+				DisplayDirection panDirection = (DisplayDirection)Enum.Parse(typeof(DisplayDirection), direction);
+
+				// Pan
+				using ( WebMap webMap = Map1.CreateWebMap() ) 
+				{
+					webMap.Pan(panDirection, PAN_PERCENT);
+				}
+			} 
+			catch(Exception exception)
+			{
+				callErrorPage("Error panning.", exception);
+			}		
+		}
+
+
+		/// <summary>
+		/// Perform the FullExtent operation on the Map Control by responding to the 
+		/// click on the FullExtent button
+		/// </summary>
+		private void FullExtent() 
+		{
+			using ( WebMap webMap = Map1.CreateWebMap() ) 
+			{
+				webMap.DrawFullExtent();
+			}
+		}
+
+		
+		/// <summary>
+		/// Event triggered when Map is changed. 
+		/// Adds extent to extent history.
+		/// </summary>
+		private void MapChanged(object sender, EventArgs e) 
+		{
+			try
+			{
+				// Pull extent history from session
+				m_extenthistory = Session["extenthistory"] as ArrayList;
+				int index = 0;
+				if (Session["index"]!=null) index = (int)Session["index"];
+				// If extent history doesn't exist... create one
+				if ( m_extenthistory == null )
+					m_extenthistory = new ArrayList();
+				// Keep extent history count to MAXIMUM_EXTENT_HISTORY_COUNT
+				if ( m_extenthistory.Count >= MAXIMUM_EXTENT_HISTORY_COUNT) 
+					m_extenthistory.RemoveAt(0);
+			
+				m_extenthistory.Add(Map1.Extent);
+				index++;
+				if (index == m_extenthistory.Count) 
+					index = m_extenthistory.Count-1;
+				// Add extent history and index to Session
+				Session.Add("index", index);
+				Session.Add("extenthistory", m_extenthistory);
+				m_lastextent = Map1.Extent;
+				UpdateViewerSessionObjects() ;
+
+			}
+			catch(Exception exception)
+			{
+				callErrorPage("Error responding to Map's ContentsChanged event.", exception);
+			}		
+
+
+		}
+
+		/// <summary>
+		/// Updates the viewer's current session objects
+		/// </summary>
+		private void UpdateViewerSessionObjects() 
+		{
+			// set up shared objects for ID window
+			Session.Add("map_host", Map1.Host);
+			Session.Add("map_serverobject", Map1.ServerObject);
+			Session.Add("map_dataframe", Map1.DataFrame);
+
+			Session.Add("map_width", (Map1.Width.Value - (Map1.BorderWidth.Value * 2)));
+			Session.Add("map_height", (Map1.Height.Value - (Map1.BorderWidth.Value * 2)));
+			Session.Add("Map1_CurrentExtent", Map1.Extent);
+
+			// save name of map description session object
+			Session.Add("MapDescName",  m_MapDescriptSessName);
+
+			// If the server object is non-pooled the servercontext must be saved to session
+			if (!isPooled) 
+			{
+				string sess_ctx = String.Format("servercontext_{0}_{1}", Map1.Host, Map1.ServerObject);
+				IServerContext m_ctx = Session[sess_ctx] as IServerContext;
+				if (m_ctx == null) 
+				{
+					using (WebMap webMap = Map1.CreateWebMap())
+					{
+						Session.Add(sess_ctx, webMap.ServerContext);
+			
+					}
+				}
+			}
+
+		}
+
+		/// <summary>
+		/// Event triggered when the ZoomBack button is clicked.
+		/// Move back on extent in the extent history
+		/// </summary>
+		private void ZoomBack() 
+		{
+			// Pull extent history from session
+			int index = 0;
+			if (Session["index"]!=null) index = (int)Session["index"];
+			m_extenthistory = Session["extenthistory"] as ArrayList;
+			// If extent history doesn't exist exit method
+			if ( m_extenthistory == null ) 
+				return;
+			// kill off MapChanged event handler for the duration of this request
+			Map1.ContentsChanged -= new ESRI.ArcGIS.Server.WebControls.ContentsChangeEventHandler(MapChanged);
+			index--;
+			if ( index < 0 ) 
+				index = 0;
+			// Get extent from history
+			Extent ext = m_extenthistory[index] as Extent;
+			// Set map extent to pulled extent
+			Map1.Extent = ext;
+			Map1.Draw();
+
+			// update index in Session
+			Session["index"] = index;
+			UpdateViewerSessionObjects() ;
+		}
+
+
+		/// <summary>
+		/// Event triggered when the ZoomForward button is clicked
+		/// Move forward in extent history
+		/// </summary>
+		private void ZoomForward() 
+		{
+			// Pull extent history from Session
+			int index = 0;
+			if (Session["index"]!=null) index = (int)Session["index"];
+			m_extenthistory = Session["extenthistory"] as ArrayList;
+			// If extent history doesn't exist exit method
+			if ( m_extenthistory == null ) 
+				return;
+			index++;
+			// kill off MapChanged event handler for the duration of this request
+			Map1.ContentsChanged -= new ESRI.ArcGIS.Server.WebControls.ContentsChangeEventHandler(MapChanged);
+			if ( index == m_extenthistory.Count )
+				index = m_extenthistory.Count-1;
+			// Get extent from history
+			Extent ext = m_extenthistory[index] as Extent;
+			// Set map extent to pulled extent
+			Map1.Extent = ext;
+			Map1.Draw();
+			
+			// update index in Session
+			Session["index"] = index;
+			UpdateViewerSessionObjects() ;
+		}
+
+
+		/// <summary>
+		/// Displays the error page.
+		/// </summary>
+		private void callErrorPage(string errorMessage, Exception exception) 
+		{
+			Session["ErrorMessage"] = errorMessage;
+			Session["Error"] = exception;
+			Page.Response.Redirect("ErrorPage.aspx",true);
+		}
+
+		/// <summary>
+		/// Event catcher for clicks on Command buttons on Toolbar
+		/// </summary>
+		private void Toolbar1_CommandClick(object sender, ESRI.ArcGIS.Server.WebControls.ToolbarCommandClickEventArgs e)
+		{
+			try 
+			{
+				switch(e.CommandName) 
+				{
+					case "FullExtent":
+						FullExtent();
+						break;
+					case "ZoomBack":
+						ZoomBack();
+						break;
+					case "ZoomNext":
+						ZoomForward();
+						break;
+				}
+			} 
+			catch(Exception exception) 			
+			{
+				callErrorPage(String.Format("Error in {0} command.", e.CommandName), exception);
+			}
+
+		}
+
+		#endregion
+
+		private void Button1_Click(object sender, System.EventArgs e)
+		{
+			try
+			{
+				Server.Transfer("Bump.aspx");
+			}
+			catch
+			{
+				Server.ClearError();
+				Server.Transfer("Bump.aspx");
+			}
+		}
+	}
+}

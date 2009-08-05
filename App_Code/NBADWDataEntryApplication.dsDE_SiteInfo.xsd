@@ -1,0 +1,38 @@
+<?xml version="1.0" standalone="yes" ?>
+<xs:schema id="dsDE_SiteInfo" targetNamespace="http://www.tempuri.org/dsDE_SiteInfo.xsd" xmlns:mstns="http://www.tempuri.org/dsDE_SiteInfo.xsd"
+	xmlns="http://www.tempuri.org/dsDE_SiteInfo.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" attributeFormDefault="qualified" elementFormDefault="qualified">
+	<xs:element name="dsDE_SiteInfo" msdata:IsDataSet="true">
+		<xs:complexType>
+			<xs:choice maxOccurs="unbounded">
+				<xs:element name="DE-SiteInfo">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="AgencyCd" type="xs:string" minOccurs="0" />
+							<xs:element name="AgencySiteID" type="xs:string" minOccurs="0" />
+							<xs:element name="AquaticSiteDesc" type="xs:string" minOccurs="0" />
+							<xs:element name="AquaticSiteID" type="xs:int" minOccurs="0" />
+							<xs:element name="AquaticSiteName" type="xs:string" minOccurs="0" />
+							<xs:element name="AquaticSiteUseID" msdata:AutoIncrement="true" type="xs:int" minOccurs="0" />
+							<xs:element name="CoordinateSource" type="xs:string" minOccurs="0" />
+							<xs:element name="CoordinateSystem" type="xs:string" minOccurs="0" />
+							<xs:element name="CoordinateUnits" type="xs:string" minOccurs="0" />
+							<xs:element name="DrainageCd" type="xs:string" minOccurs="0" />
+							<xs:element name="DrainName" msdata:ReadOnly="true" type="xs:string" minOccurs="0" />
+							<xs:element name="tblAquaticSite.IncorporatedInd" type="xs:boolean" minOccurs="0" />
+							<xs:element name="tblAquaticSiteAgencyUse.IncorporatedInd" type="xs:boolean" minOccurs="0" />
+							<xs:element name="WaterBodyID" type="xs:int" minOccurs="0" />
+							<xs:element name="WaterBodyName" type="xs:string" minOccurs="0" />
+							<xs:element name="XCoordinate" type="xs:string" minOccurs="0" />
+							<xs:element name="YCoordinate" type="xs:string" minOccurs="0" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:choice>
+		</xs:complexType>
+		<xs:key name="dsDE_SiteInfoKey1" msdata:PrimaryKey="true">
+			<xs:selector xpath=".//mstns:DE-SiteInfo" />
+			<xs:field xpath="mstns:AquaticSiteUseID" />
+		</xs:key>
+	</xs:element>
+</xs:schema>

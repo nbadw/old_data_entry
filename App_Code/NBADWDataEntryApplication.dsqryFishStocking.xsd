@@ -1,0 +1,49 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="dsqryFishStocking" targetNamespace="http://www.tempuri.org/dsqryFishStocking.xsd" xmlns:mstns="http://www.tempuri.org/dsqryFishStocking.xsd" xmlns="http://www.tempuri.org/dsqryFishStocking.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:element name="dsqryFishStocking" msdata:IsDataSet="true">
+    <xs:complexType>
+      <xs:choice maxOccurs="unbounded">
+        <xs:element name="qryFishStocking">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Agency2Cd" type="xs:string" minOccurs="0" />
+              <xs:element name="Agency2Contact" type="xs:string" minOccurs="0" />
+              <xs:element name="Agency2SiteID" type="xs:string" minOccurs="0" />
+              <xs:element name="AgencyCd" type="xs:string" minOccurs="0" />
+              <xs:element name="AgencySiteID" type="xs:string" minOccurs="0" />
+              <xs:element name="AgeUnitOfMeasure" type="xs:string" minOccurs="0" />
+              <xs:element name="AirTemp_C" type="xs:float" minOccurs="0" />
+              <xs:element name="AppliedMarkCd" type="xs:int" minOccurs="0" />
+              <xs:element name="AquaticSiteID" type="xs:int" minOccurs="0" />
+              <xs:element name="AveLength_cm" type="xs:double" minOccurs="0" />
+              <xs:element name="AveWeight_gm" type="xs:double" minOccurs="0" />
+              <xs:element name="BroodstockInd" type="xs:boolean" minOccurs="0" />
+              <xs:element name="Crew" type="xs:string" minOccurs="0" />
+              <xs:element name="Date" type="xs:string" minOccurs="0" />
+              <xs:element name="DrainageCd" type="xs:string" minOccurs="0" />
+              <xs:element name="FishAge" type="xs:string" minOccurs="0" />
+              <xs:element name="FishAgeClass" type="xs:string" minOccurs="0" />
+              <xs:element name="FishMark" type="xs:string" minOccurs="0" />
+              <xs:element name="FishSpecies" type="xs:string" minOccurs="0" />
+              <xs:element name="FishSpeciesCd" type="xs:string" minOccurs="0" />
+              <xs:element name="FishStockingID" msdata:AutoIncrement="true" type="xs:int" minOccurs="0" />
+              <xs:element name="FishStockName" type="xs:string" minOccurs="0" />
+              <xs:element name="FishTankNo" type="xs:string" minOccurs="0" />
+              <xs:element name="LengthRange_cm" type="xs:string" minOccurs="0" />
+              <xs:element name="Location" type="xs:string" minOccurs="0" />
+              <xs:element name="NoFish" type="xs:int" minOccurs="0" />
+              <xs:element name="PermitNo" type="xs:string" minOccurs="0" />
+              <xs:element name="SatelliteRearedInd" type="xs:boolean" minOccurs="0" />
+              <xs:element name="Source" type="xs:string" minOccurs="0" />
+              <xs:element name="TimeofDay" type="xs:string" minOccurs="0" />
+              <xs:element name="WaterBodyID" type="xs:int" minOccurs="0" />
+              <xs:element name="WaterLevel" type="xs:string" minOccurs="0" />
+              <xs:element name="WaterTemp_C" type="xs:float" minOccurs="0" />
+              <xs:element name="WeightRange_gm" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

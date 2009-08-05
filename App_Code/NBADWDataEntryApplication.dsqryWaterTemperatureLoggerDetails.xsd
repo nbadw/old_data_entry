@@ -1,0 +1,49 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="dsqryWaterTemperatureLoggerDetails" targetNamespace="http://www.tempuri.org/dsqryWaterTemperatureLoggerDetails.xsd" xmlns:mstns="http://www.tempuri.org/dsqryWaterTemperatureLoggerDetails.xsd" xmlns="http://www.tempuri.org/dsqryWaterTemperatureLoggerDetails.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:element name="dsqryWaterTemperatureLoggerDetails" msdata:IsDataSet="true">
+    <xs:complexType>
+      <xs:choice maxOccurs="unbounded">
+        <xs:element name="qryWaterTemperatureLoggerDetails">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Accuracy" type="xs:string" minOccurs="0" />
+              <xs:element name="AgencyCd" type="xs:string" minOccurs="0" />
+              <xs:element name="AgencySiteID" type="xs:string" minOccurs="0" />
+              <xs:element name="AquaticActivityID" type="xs:int" minOccurs="0" />
+              <xs:element name="AquaticSiteID" type="xs:int" minOccurs="0" />
+              <xs:element name="AquaticSiteName" type="xs:string" minOccurs="0" />
+              <xs:element name="BrandName" type="xs:string" minOccurs="0" />
+              <xs:element name="DataFileName" type="xs:string" minOccurs="0" />
+              <xs:element name="DistanceFromLeftBank_m" type="xs:int" minOccurs="0" />
+              <xs:element name="DistanceFromRightBank_m" type="xs:int" minOccurs="0" />
+              <xs:element name="DrainageCd" type="xs:string" minOccurs="0" />
+              <xs:element name="HabitatDesc" type="xs:string" minOccurs="0" />
+              <xs:element name="Install_AirTemp_C" type="xs:float" minOccurs="0" />
+              <xs:element name="Install_TimeofDay" type="xs:string" minOccurs="0" />
+              <xs:element name="Install_WaterTemp_C" type="xs:float" minOccurs="0" />
+              <xs:element name="InstallationDate" type="xs:string" minOccurs="0" />
+              <xs:element name="LoggerNo" type="xs:string" minOccurs="0" />
+              <xs:element name="Model" type="xs:string" minOccurs="0" />
+              <xs:element name="RecordingEndDate" type="xs:string" minOccurs="0" />
+              <xs:element name="RecordingStartDate" type="xs:string" minOccurs="0" />
+              <xs:element name="Removal_AirTemp_C" type="xs:float" minOccurs="0" />
+              <xs:element name="Removal_TimeofDay" type="xs:string" minOccurs="0" />
+              <xs:element name="Removal_WaterTemp_C" type="xs:float" minOccurs="0" />
+              <xs:element name="RemovalDate" type="xs:string" minOccurs="0" />
+              <xs:element name="Resolution" type="xs:string" minOccurs="0" />
+              <xs:element name="SampleInterval_min" type="xs:float" minOccurs="0" />
+              <xs:element name="TemperatureLoggerID" msdata:AutoIncrement="true" type="xs:int" minOccurs="0" />
+              <xs:element name="TempRange_From" type="xs:int" minOccurs="0" />
+              <xs:element name="TempRange_To" type="xs:int" minOccurs="0" />
+              <xs:element name="WaterBodyID" type="xs:int" minOccurs="0" />
+              <xs:element name="WaterBodyName" type="xs:string" minOccurs="0" />
+              <xs:element name="WaterDepth_cm" type="xs:int" minOccurs="0" />
+              <xs:element name="WaterLevel_Install" type="xs:string" minOccurs="0" />
+              <xs:element name="WaterLevel_Removal" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

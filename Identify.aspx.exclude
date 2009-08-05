@@ -1,0 +1,117 @@
+<%@ Page language="c#" Inherits="ArcServer3.Identify" smartNavigation="True" enableViewState="True" enableViewStateMac="False" CodeFile="Identify.aspx.cs" %>
+<%@ Register TagPrefix="esri" Namespace="ESRI.ArcGIS.Server.WebControls" Assembly="ESRI.ArcGIS.Server.WebControls, Version=9.1.0.722, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86" %>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" >
+<HTML>
+	<HEAD>
+		<title>Identify Results </title>
+		<meta content="Microsoft Visual Studio 7.0" name="GENERATOR">
+		<meta content="C#" name="CODE_LANGUAGE">
+		<meta content="JavaScript" name="vs_defaultClientScript">
+		<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+		<script language="javascript">
+			
+			
+				// JavaScript function to reset tool on main page to Identify
+				// and set focus to this window
+			function SetMode() {
+				if (opener) opener.ID();
+				window.focus();
+			}
+				// JavaScript function for updating display table
+				// Form is submitted passing selected table and row to display
+			function SubmitForm(tableindex, rowindex, randnum) {
+				showLoading();
+				var f = document.forms[0];
+				f.table.value = tableindex;
+				f.row.value = rowindex;
+				f.random.value = randnum;
+				f.submit();
+			}
+			
+			function RedoId() {
+				showLoading();
+				var f = document.forms[0];
+				var index = f.ddlIdentifyOption.selectedIndex;
+				var idopt = f.ddlIdentifyOption.options[index].value;
+				var today = new Date();
+				var rand = today.getTime();
+				document.location = "Identify.aspx?idtype=redo&optvalue=" + idopt + "&random=" + rand;
+			
+			}
+			
+			function showLoading() {
+				var loadDiv = document.getElementById("Loading");
+				if (loadDiv!=null) loadDiv.style.visibility = "visible";
+			}
+			
+			function start() {
+				window.focus();
+				if (opener) opener.HideLoading();
+			}
+
+		</script>
+	</HEAD>
+	<body bgColor="white" leftMargin="2" topMargin="2" onload="start();" rightMargin="2">
+		<form method="post" runat="server">
+			<!-- Title and Logo -->
+			<TABLE id="Table1" style="Z-INDEX: 102; LEFT: 10px; POSITION: absolute; TOP: 6px; HEIGHT: 30px"
+				cellSpacing="1" cellPadding="1" width="100%" bgColor="#000099" border="0">
+				<TR>
+					<td style="WIDTH: 25px"><IMG height="22" alt="" src="Images/globe.gif" width="22"></td>
+					<td style="FONT-WEIGHT: bold; FONT-SIZE: medium; COLOR: white; FONT-FAMILY: Arial, Helvetica, Sans-Serif">&nbsp;Identify 
+						Results</td>
+				</TR>
+			</TABLE> <!-- Label for Layer name --><asp:label id="TableNameLabel" style="Z-INDEX: 101; LEFT: 24px; POSITION: absolute; TOP: 40px"
+				runat="server" Font-Names="Arial,Helvetica,Sans Serif" Font-Size="X-Small" Height="20px" Width="125px">Find features in:</asp:label>
+			<!-- Label for feature number and total number of features for layer -->
+			<!-- Data Display -->
+			<div style="BORDER-RIGHT: silver thin inset; BORDER-TOP: silver thin inset; Z-INDEX: 103; LEFT: 200px; OVERFLOW: auto; BORDER-LEFT: silver thin inset; WIDTH: 362px; BORDER-BOTTOM: silver thin inset; POSITION: absolute; TOP: 80px; HEIGHT: 315px"><asp:table id="ShowTable" runat="server" Height="30px" Width="350px">
+					<asp:TableRow ForeColor="Black" ID="TopRow" BackColor="#E0E0E0" Font-Size="X-Small" Font-Names="Arial,Helvetica,Sans Serif"
+						Font-Bold="True">
+						<asp:TableCell Text="Field" ID="FieldName"></asp:TableCell>
+						<asp:TableCell Width="225px" Text="Value" ID="FieldValue"></asp:TableCell>
+					</asp:TableRow>
+				</asp:table></div>
+			<!-- Tree for selecting result row --><asp:table id="TocTitleTable" style="Z-INDEX: 104; LEFT: 16px; POSITION: absolute; TOP: 80px"
+				runat="server" Height="30px" Width="175px" BackColor="Silver" BorderStyle="Inset" BorderWidth="1px" BorderColor="Black">
+				<asp:TableRow BorderWidth="1px" BorderColor="Black" BorderStyle="Inset" ID="TocTitle" BackColor="#E0E0E0"
+					Font-Size="X-Small" Font-Names="Arial,Helvetica,Sans Serif" Font-Bold="True">
+					<asp:TableCell Text="Features" ID="TocTitleCell"></asp:TableCell>
+				</asp:TableRow>
+				<asp:TableRow ID="TocTableRow" BackColor="White">
+					<asp:TableCell ID="TocTableCell">
+						<esri:Toc runat="server" BorderStyle="Inset" BorderWidth="1px" Height="288px" AutoLayerVisibility="True"
+							BuddyControl="" SelectedNodeIndex="0" Width="175px" SystemImagesPath="/aspnet_client/esri_arcgis_server_webcontrols/1_0/treeimages/"
+							BorderColor="Black" ID="Toc1" style="overflow:auto;word-wrap:normal;"></esri:Toc>
+					</asp:TableCell>
+				</asp:TableRow>
+			</asp:table>
+			<!-- Panel displayed if session has timed out... normally not written out to page --><asp:panel id="TimeoutPanel" style="Z-INDEX: 105; LEFT: 144px; POSITION: absolute; TOP: 120px"
+				runat="server" Font-Names="Arial,Helvetica,Sans Serif" Font-Size="X-Small" Height="125px" Width="250px" BackColor="White" BorderStyle="Double" Font-Bold="True" Visible="False"
+				HorizontalAlign="Center">Returned data is no longer available.<BR>Current session may 
+have timed out.<BR>Please close and restart browser to start a new 
+session.<BR></asp:panel>
+			<!-- Hidden input fields... used in PostBack to pass selected table and row -->
+			<!-- Table index --><INPUT id="table" style="Z-INDEX: 106; LEFT: 24px; POSITION: absolute; TOP: 400px" type="hidden"
+				name="table"> 
+			<!-- Row index --><INPUT id="row" style="Z-INDEX: 107; LEFT: 24px; POSITION: absolute; TOP: 424px" type="hidden"
+				name="row"> 
+			<!-- Random number ... to make sure url is unique and posted to server and cached url is not used --><INPUT id="random" style="Z-INDEX: 108; LEFT: 24px; POSITION: absolute; TOP: 448px" type="hidden"
+				name="random">&nbsp; 
+			<!-- Identify option dropdown list --><asp:dropdownlist id="ddlIdentifyOption" style="Z-INDEX: 109; LEFT: 136px; POSITION: absolute; TOP: 40px"
+				runat="server" Font-Names="Arial,Helvetica,Sans Serif" Font-Size="X-Small" Height="28px" Width="175px" AutoPostBack="False" onchange="RedoId()">
+				<asp:ListItem Value="_TopMost_">Top-Most Layer</asp:ListItem>
+				<asp:ListItem Value="_VisibleLayers_">Visible Layers</asp:ListItem>
+				<asp:ListItem Value="_AllLayers_">All Layers</asp:ListItem>
+			</asp:dropdownlist>
+			<!-- Close button --><INPUT onmousedown="window.close()" id="CloseButton" style="Z-INDEX: 110; LEFT: 448px; WIDTH: 96px; POSITION: absolute; TOP: 400px; HEIGHT: 32px"
+				type="button" value="Close" runat="server">&nbsp; 
+			<!-- Loading image... displayed when resubmitting -->
+			<DIV id="Loading" style="Z-INDEX: 111; LEFT: 184px; VISIBILITY: hidden; WIDTH: 144px; POSITION: absolute; TOP: 216px; HEIGHT: 40px"><IMG id="imgLoading" style="Z-INDEX: 926; LEFT: 8px; POSITION: absolute; TOP: 8px" alt="Loading. . . ."
+					src="Images/loading.gif">
+			</DIV>
+			<esri:Impersonation id="Impersonation1" style="Z-INDEX: 112; LEFT: 336px; POSITION: absolute; TOP: 440px"
+				runat="server"></esri:Impersonation>
+		</form>
+	</body>
+</HTML>

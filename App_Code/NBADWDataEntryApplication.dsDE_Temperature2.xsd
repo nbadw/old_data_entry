@@ -1,0 +1,21 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="dsDE_Temperature2" targetNamespace="http://www.tempuri.org/dsDE_Temperature2.xsd" xmlns:mstns="http://www.tempuri.org/dsDE_Temperature2.xsd" xmlns="http://www.tempuri.org/dsDE_Temperature2.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:element name="dsDE_Temperature2" msdata:IsDataSet="true">
+    <xs:complexType>
+      <xs:choice maxOccurs="unbounded">
+        <xs:element name="DE-Temperature2">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="_x0038_4" type="xs:float" minOccurs="0" />
+              <xs:element name="_x0038_5" type="xs:float" minOccurs="0" />
+              <xs:element name="_x0038_6" type="xs:float" minOccurs="0" />
+              <xs:element name="AquaticActivityID" type="xs:int" minOccurs="0" />
+              <xs:element name="AquaticActivityStartDate" type="xs:string" minOccurs="0" />
+              <xs:element name="TemperatureLoggerID" type="xs:int" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

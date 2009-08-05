@@ -1,0 +1,89 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="dstblEnvironmentalSurveyFieldMeasures" targetNamespace="http://www.tempuri.org/dstblEnvironmentalSurveyFieldMeasures.xsd" xmlns:mstns="http://www.tempuri.org/dstblEnvironmentalSurveyFieldMeasures.xsd" xmlns="http://www.tempuri.org/dstblEnvironmentalSurveyFieldMeasures.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:element name="dstblEnvironmentalSurveyFieldMeasures" msdata:IsDataSet="true">
+    <xs:complexType>
+      <xs:choice maxOccurs="unbounded">
+        <xs:element name="tblEnvironmentalSurveyFieldMeasures">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Algae" type="xs:boolean" minOccurs="0" />
+              <xs:element name="AquaticActivityID" type="xs:int" minOccurs="0" />
+              <xs:element name="AquaticPlants" type="xs:boolean" minOccurs="0" />
+              <xs:element name="AveDepth_m" type="xs:float" minOccurs="0" />
+              <xs:element name="AveWidth_m" type="xs:float" minOccurs="0" />
+              <xs:element name="BankSlope_Lt" type="xs:short" minOccurs="0" />
+              <xs:element name="BankSlope_Rt" type="xs:short" minOccurs="0" />
+              <xs:element name="BankStability" type="xs:string" minOccurs="0" />
+              <xs:element name="DeadFish" type="xs:boolean" minOccurs="0" />
+              <xs:element name="EmbeddedSub" type="xs:boolean" minOccurs="0" />
+              <xs:element name="FieldMeasureID" msdata:AutoIncrement="true" type="xs:int" />
+              <xs:element name="Foam" type="xs:boolean" minOccurs="0" />
+              <xs:element name="GW1_AirTemp_C" type="xs:float" minOccurs="0" />
+              <xs:element name="GW1_Conductivity" type="xs:float" minOccurs="0" />
+              <xs:element name="GW1_DELGFieldNo" type="xs:string" minOccurs="0" />
+              <xs:element name="GW1_DissOxygen" type="xs:float" minOccurs="0" />
+              <xs:element name="GW1_Flow_cms" type="xs:float" minOccurs="0" />
+              <xs:element name="GW1_pH" type="xs:float" minOccurs="0" />
+              <xs:element name="GW1_TimeofDay" type="xs:string" minOccurs="0" />
+              <xs:element name="GW1_WaterTemp_C" type="xs:float" minOccurs="0" />
+              <xs:element name="GW2_AirTemp_C" type="xs:float" minOccurs="0" />
+              <xs:element name="GW2_Conductivity" type="xs:float" minOccurs="0" />
+              <xs:element name="GW2_DELGFieldNo" type="xs:string" minOccurs="0" />
+              <xs:element name="GW2_DissOxygen" type="xs:float" minOccurs="0" />
+              <xs:element name="GW2_Flow_cms" type="xs:float" minOccurs="0" />
+              <xs:element name="GW2_pH" type="xs:float" minOccurs="0" />
+              <xs:element name="GW2_TimeofDay" type="xs:string" minOccurs="0" />
+              <xs:element name="GW2_WaterTemp_C" type="xs:float" minOccurs="0" />
+              <xs:element name="Length_m" type="xs:float" minOccurs="0" />
+              <xs:element name="Odor" type="xs:boolean" minOccurs="0" />
+              <xs:element name="Other" type="xs:boolean" minOccurs="0" />
+              <xs:element name="OtherSupp" type="xs:string" minOccurs="0" />
+              <xs:element name="Petroleum" type="xs:boolean" minOccurs="0" />
+              <xs:element name="RZ_Altered_Lt" type="xs:short" minOccurs="0" />
+              <xs:element name="RZ_Altered_Rt" type="xs:short" minOccurs="0" />
+              <xs:element name="RZ_ForageCrop_Lt" type="xs:short" minOccurs="0" />
+              <xs:element name="RZ_ForageCrop_Rt" type="xs:short" minOccurs="0" />
+              <xs:element name="RZ_Hardwood_Lt" type="xs:short" minOccurs="0" />
+              <xs:element name="RZ_Hardwood_Rt" type="xs:short" minOccurs="0" />
+              <xs:element name="RZ_Lawn_Lt" type="xs:short" minOccurs="0" />
+              <xs:element name="RZ_Lawn_Rt" type="xs:float" minOccurs="0" />
+              <xs:element name="RZ_Meadow_Lt" type="xs:short" minOccurs="0" />
+              <xs:element name="RZ_Meadow_Rt" type="xs:short" minOccurs="0" />
+              <xs:element name="RZ_Mixed_Lt" type="xs:short" minOccurs="0" />
+              <xs:element name="RZ_Mixed_Rt" type="xs:short" minOccurs="0" />
+              <xs:element name="RZ_RowCrop_Lt" type="xs:short" minOccurs="0" />
+              <xs:element name="RZ_RowCrop_Rt" type="xs:short" minOccurs="0" />
+              <xs:element name="RZ_Shrubs_Lt" type="xs:short" minOccurs="0" />
+              <xs:element name="RZ_Shrubs_Rt" type="xs:short" minOccurs="0" />
+              <xs:element name="RZ_Softwood_Lt" type="xs:short" minOccurs="0" />
+              <xs:element name="RZ_Softwood_Rt" type="xs:short" minOccurs="0" />
+              <xs:element name="RZ_Wetland_Lt" type="xs:short" minOccurs="0" />
+              <xs:element name="RZ_Wetland_Rt" type="xs:short" minOccurs="0" />
+              <xs:element name="ST_AirTemp_C" type="xs:float" minOccurs="0" />
+              <xs:element name="ST_Conductivity" type="xs:float" minOccurs="0" />
+              <xs:element name="ST_DELGFieldNo" type="xs:string" minOccurs="0" />
+              <xs:element name="ST_DissOxygen" type="xs:float" minOccurs="0" />
+              <xs:element name="ST_Flow_cms" type="xs:float" minOccurs="0" />
+              <xs:element name="ST_pH" type="xs:float" minOccurs="0" />
+              <xs:element name="ST_TimeofDay" type="xs:string" minOccurs="0" />
+              <xs:element name="ST_WaterTemp_C" type="xs:float" minOccurs="0" />
+              <xs:element name="StreamCover" type="xs:string" minOccurs="0" />
+              <xs:element name="StreamType" type="xs:string" minOccurs="0" />
+              <xs:element name="StreamTypeSupp" type="xs:string" minOccurs="0" />
+              <xs:element name="SuspendedSilt" type="xs:boolean" minOccurs="0" />
+              <xs:element name="Velocity_mpers" type="xs:float" minOccurs="0" />
+              <xs:element name="WaterClarity" type="xs:string" minOccurs="0" />
+              <xs:element name="WaterColor" type="xs:string" minOccurs="0" />
+              <xs:element name="Weather_Current" type="xs:string" minOccurs="0" />
+              <xs:element name="Weather_Past" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+    <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:tblEnvironmentalSurveyFieldMeasures" />
+      <xs:field xpath="mstns:FieldMeasureID" />
+    </xs:unique>
+  </xs:element>
+</xs:schema>

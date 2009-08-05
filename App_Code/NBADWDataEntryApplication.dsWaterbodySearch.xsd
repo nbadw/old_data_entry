@@ -1,0 +1,23 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="dsWaterbodySearch" targetNamespace="http://www.tempuri.org/dsWaterbodySearch.xsd" xmlns:mstns="http://www.tempuri.org/dsWaterbodySearch.xsd" xmlns="http://www.tempuri.org/dsWaterbodySearch.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:element name="dsWaterbodySearch" msdata:IsDataSet="true">
+    <xs:complexType>
+      <xs:choice maxOccurs="unbounded">
+        <xs:element name="DE-Watersheds">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="DrainageCd" type="xs:string" minOccurs="0" />
+              <xs:element name="DrainName" msdata:ReadOnly="true" type="xs:string" minOccurs="0" />
+              <xs:element name="Level1Name" type="xs:string" minOccurs="0" />
+              <xs:element name="Level2Name" type="xs:string" minOccurs="0" />
+              <xs:element name="Level3Name" type="xs:string" minOccurs="0" />
+              <xs:element name="WaterBodyID" type="xs:int" minOccurs="0" />
+              <xs:element name="WaterBodyName" type="xs:string" minOccurs="0" />
+              <xs:element name="WaterBodyName_Abrev" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

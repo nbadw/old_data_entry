@@ -1,0 +1,25 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="dsDE_ELECTPopEstimates" targetNamespace="http://www.tempuri.org/dsDE_ELECTPopEstimates.xsd" xmlns:mstns="http://www.tempuri.org/dsDE_ELECTPopEstimates.xsd" xmlns="http://www.tempuri.org/dsDE_ELECTPopEstimates.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:element name="dsDE_ELECTPopEstimates" msdata:IsDataSet="true">
+    <xs:complexType>
+      <xs:choice maxOccurs="unbounded">
+        <xs:element name="DE-ELECTPopEstimates">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="AquaticActivityID" type="xs:int" minOccurs="0" />
+              <xs:element name="AveForkLength_cm" type="xs:double" minOccurs="0" />
+              <xs:element name="AveWeight_gm" type="xs:double" minOccurs="0" />
+              <xs:element name="FishAgeClass" type="xs:string" minOccurs="0" />
+              <xs:element name="FishSpecies" type="xs:string" minOccurs="0" />
+              <xs:element name="PopulationEstimate" type="xs:double" minOccurs="0" />
+              <xs:element name="PopulationParameter" type="xs:string" minOccurs="0" />
+              <xs:element name="RelativeSizeClass" type="xs:string" minOccurs="0" />
+              <xs:element name="EFDataID" type="xs:double" minOccurs="0" />
+              <xs:element name="EFPopulationEstimateID" msdata:AutoIncrement="true" type="xs:int" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

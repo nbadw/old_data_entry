@@ -1,0 +1,26 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="dsSiteSearch" targetNamespace="http://www.tempuri.org/dsSiteSearch.xsd" xmlns:mstns="http://www.tempuri.org/dsSiteSearch.xsd" xmlns="http://www.tempuri.org/dsSiteSearch.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:element name="dsSiteSearch" msdata:IsDataSet="true">
+    <xs:complexType>
+      <xs:choice maxOccurs="unbounded">
+        <xs:element name="DE-SiteSearch">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="AgencyCd" type="xs:string" minOccurs="0" />
+              <xs:element name="AgencySiteID" type="xs:string" minOccurs="0" />
+              <xs:element name="AquaticActivity" type="xs:string" minOccurs="0" />
+              <xs:element name="AquaticActivityCd" type="xs:short" minOccurs="0" />
+              <xs:element name="AquaticSiteDesc" type="xs:string" minOccurs="0" />
+              <xs:element name="AquaticSiteID" type="xs:int" minOccurs="0" />
+              <xs:element name="AquaticSiteName" type="xs:string" minOccurs="0" />
+              <xs:element name="AquaticSiteUseID" msdata:AutoIncrement="true" type="xs:int" minOccurs="0" />
+              <xs:element name="DrainageCd" type="xs:string" minOccurs="0" />
+              <xs:element name="WaterBodyID" type="xs:int" minOccurs="0" />
+              <xs:element name="WaterBodyName" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

@@ -1,0 +1,24 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="dscdFishAgeClass" targetNamespace="http://www.tempuri.org/dscdFishAgeClass.xsd" xmlns:mstns="http://www.tempuri.org/dscdFishAgeClass.xsd" xmlns="http://www.tempuri.org/dscdFishAgeClass.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:element name="dscdFishAgeClass" msdata:IsDataSet="true">
+    <xs:complexType>
+      <xs:choice maxOccurs="unbounded">
+        <xs:element name="cdFishAgeClass">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="FishAgeClass" type="xs:string" />
+              <xs:element name="FishAgeClassCategory" type="xs:string" minOccurs="0" />
+              <xs:element name="ElectrofishInd" type="xs:boolean" minOccurs="0" />
+              <xs:element name="FishCountInd" type="xs:boolean" minOccurs="0" />
+              <xs:element name="StockingInd" type="xs:boolean" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+    <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:cdFishAgeClass" />
+      <xs:field xpath="mstns:FishAgeClass" />
+    </xs:unique>
+  </xs:element>
+</xs:schema>

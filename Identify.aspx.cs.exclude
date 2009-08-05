@@ -1,0 +1,655 @@
+/*
+COPYRIGHT 1995-2004 ESRI
+
+TRADE SECRETS: ESRI PROPRIETARY AND CONFIDENTIAL
+Unpublished material - all rights reserved under the 
+Copyright Laws of the United States.
+
+For additional information, contact:
+Environmental Systems Research Institute, Inc.
+Attn: Contracts Dept
+380 New York Street
+Redlands, California, USA 92373
+
+email: contracts@esri.com
+*/using System;
+using System.Collections;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Web;
+using System.Web.SessionState;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.HtmlControls;
+using ESRI.ArcGIS.Server.WebControls;
+using ESRI.ArcGIS.Geometry;
+using ESRI.ArcGIS.Carto;
+using ESRI.ArcGIS.esriSystem;
+using ESRI.ArcGIS.Server;
+
+
+
+namespace ArcServer3
+{
+	/// <summary>
+	/// Summary description for Identify.
+	/// </summary>
+	public partial class Identify : System.Web.UI.Page
+	{
+		#region Member variables   TODO: Add any additional ones here
+
+
+		private esriIdentifyOption idOption = esriIdentifyOption.esriIdentifyTopmost;
+		private string idOptionValue = "_TopMost_";
+		private System.Data.DataSet m_dataset = null;
+		private Extent m_extent;
+		private int table_index = 0;
+		private int row_index = 0;
+		private int id_layer = -1;
+		private int idx = 0;
+		private int idy = 0;
+		private int m_width;
+		private int m_height;
+		private string m_serverobject = String.Empty;
+		private string m_dataframe = String.Empty;
+		private string m_host = String.Empty;
+		private string m_contextname = String.Empty;
+		private string m_lastdataframe = String.Empty;
+		private ArrayList m_featurelayeridlist = new ArrayList();
+		private ArrayList m_featurelayernamelist = new ArrayList();
+		private ArrayList m_displaylist = new ArrayList();
+
+		#endregion
+
+		#region Page_Load --- TODO: Add or modify anything that needs to happen at page load here
+		
+		protected void Page_Load(object sender, System.EventArgs e) 
+		{
+			// check for coordinates
+			object sessobj = Session["idx"];
+			if (sessobj!=null) idx = Convert.ToInt32(sessobj);
+			sessobj = Session["idy"];
+			if (sessobj!=null) idy = Convert.ToInt32(sessobj);
+			// get saved session parameters, if any
+			m_host = Convert.ToString(Session["map_host"]);
+			m_serverobject = Convert.ToString(Session["map_serverobject"]);
+			m_dataframe = Convert.ToString(Session["map_dataframe"]);
+			m_width = Convert.ToInt32(Session["map_width"]);
+			m_height = Convert.ToInt32(Session["map_height"]);
+			m_extent = Session["Map1_CurrentExtent"] as Extent;
+			sessobj = Session["map_last_dataframe"];
+			if (sessobj != null) m_lastdataframe = Convert.ToString(sessobj);
+			// Add default drop down options, if not already set
+			string idtype = Request.Params["idtype"];
+			// Check request parameters for "table" and "row"
+			string tablestr = Request.Params.Get("table");
+
+			if ( tablestr == null ) 
+				tablestr = String.Empty;
+			
+			if ( tablestr != String.Empty ) 
+				table_index = int.Parse(tablestr);
+			
+			string rowstr = Request.Params.Get("row");
+			
+			if ( rowstr == null ) 
+				rowstr = String.Empty;
+			
+			if ( rowstr != String.Empty ) 
+				row_index = int.Parse(rowstr);
+
+			string coordstr = Request.Params.Get("idx");
+			if (coordstr!=null) idx = Convert.ToInt32(coordstr);
+			coordstr = Request.Params.Get("idy");
+			if (coordstr!=null) idy = Convert.ToInt32(coordstr);
+			Session.Add("idx", idx);
+			Session.Add("idy", idy);
+			sessobj = Session["idOptionValue"];
+			if (sessobj!=null) idOptionValue = Convert.ToString(sessobj);
+			
+			if ((m_lastdataframe != String.Empty) && (m_dataframe != m_lastdataframe)) 
+			{
+				// this request is using a different dataframe from the previous request
+				// so reset the selected option to the default... top-most... and clear out any selected layer
+				idOptionValue = "_TopMost_"; 
+				Session.Add("idOption",esriIdentifyOption.esriIdentifyTopmost);
+				Session.Add("idLayer","-1");
+			}
+			Session.Add("idOptionValue", idOptionValue);
+
+			m_contextname = String.Format("servercontext_{0}_{1}", m_host, m_serverobject);
+			
+			// Process new Identify session - (the initial display of this identify)
+			if ( !Page.IsPostBack ) 
+			{
+				if (idtype!=null) 
+				{
+					// Do a full update of the tree display and a new Identify
+					m_featurelayeridlist = (ArrayList)Session["featurelayeridlist"];
+					m_featurelayernamelist = (ArrayList)Session["featurelayernamelist"];
+
+					setupDisplayList();
+					updateOptionList();
+					checkIdentifyOption();
+					ExecuteIdentify(idx, idy);
+					initTree();
+
+					updateDisplayTable();
+
+				} 
+				else 
+				{
+					setupDisplayList();
+					// create the node tree of selectable rows
+					initTree();
+				}
+			} 
+			else 
+			{
+				// page update from selection from tree
+
+				// Get saved DataSet from Session
+				m_dataset = Session["id"] as System.Data.DataSet;
+				// Check if it exists... unless Session has expired it should be there
+				//	since this page should only be called after a valid DataSet was obtained
+				if (m_dataset!=null) 
+				{
+					// This is a PostBack with no need to create a new node tree
+					// Expand current node, unless the PostBack was intiated by clicking the plus/minus box
+					// which sends null values for table and row
+					if ((!tablestr.Equals(String.Empty)) && (!rowstr.Equals(String.Empty)))
+						Toc1.Nodes[table_index].Expanded = true;
+					
+					// Show current selected row
+					updateDisplayTable();
+					m_featurelayeridlist = (ArrayList)Session["featurelayeridlist"];
+					m_featurelayernamelist = (ArrayList)Session["featurelayernamelist"];
+					updateOptionList();
+
+				}
+				else
+				{
+					// Session has expired
+					// Change display labels to reflect this
+					TableNameLabel.Text = "No Features Found";
+					// Display Timeout information
+					// by making the panel visible
+					TimeoutPanel.Visible = true;
+				}
+			}
+
+			Session.Add("map_last_dataframe",m_dataframe);
+
+		}
+
+		/// <summary>
+		/// Displays the error page.
+		/// </summary>
+		private void callErrorPage(string errorMessage, Exception exception) 
+		{
+			Session["ErrorMessage"] = errorMessage;
+			Session["Error"] = exception;
+			Page.Response.Redirect("ErrorPage.aspx",true);
+		}
+
+		#endregion
+
+		#region Methods --- TODO: Add any additional ones here
+
+		/// <summary>
+		/// Create node tree for featue display selection. 
+		/// Main nodes are for layer names.
+		/// Sub nodes are for returned features identified by DisplayField value.
+		/// </summary>
+		private void initTree() 
+		{
+			try 
+			{
+				// Clear out tree nodes
+				Toc1.Nodes.Clear();
+				Toc1.ShowLines = true;
+				Toc1.ShowPlus = true;
+				TocNode tablenode, tablerownode;
+
+				int tcount = -1;
+				int rcount = -1;
+				int dispindex,pos,layerIndex;
+				string blurb,tname;
+				Random rand = new Random();;
+				if (m_dataset!=null) 
+				{
+					// Get display field list
+					ArrayList m_displaylist = Session["displaylist"] as ArrayList;
+					if (m_displaylist==null) m_displaylist = new ArrayList();
+					// Loop through the tables in DataSet
+					foreach ( System.Data.DataTable table in m_dataset.Tables) 
+					{
+						// Create a new table node
+						tablenode = new TocNode();
+						// Parse out layer name and index from table name
+						pos = table.TableName.IndexOf(" - ");
+						tname = (pos!=-1)? table.TableName.Substring(pos + 3) : table.TableName;
+						layerIndex = (pos!=-1) ? int.Parse(table.TableName.Substring(0,pos)) : 0;
+						// Set node text to layer name
+						tablenode.Text = tname;
+						tcount++;
+						// Set node link url with table and row indexes
+						tablenode.NavigateUrl = "JavaScript: SubmitForm(" + tcount.ToString() + ",0," + rand.Next().ToString() + ")";
+						// Loop through the rows and add nodes to the tree for each
+						rcount = -1;
+						foreach (DataRow row in table.Rows)
+						{
+							// Create a new row node
+							tablerownode = new TocNode();
+							rcount++;
+							// check for match in column names to display field name from list for this layer index
+							dispindex = table.Columns.IndexOf((string)m_displaylist[layerIndex]);
+							// If match use value from column, otherwise just display "Feature (n)"
+							blurb = (dispindex!=-1)? Convert.ToString(row[dispindex]) : "Feature" + " " + Convert.ToString(rcount+1);
+							// Set node text
+							tablerownode.Text = blurb;
+							// Set node link url with table and row indexes
+							tablerownode.NavigateUrl = "JavaScript: SubmitForm(" + tcount.ToString() + "," + rcount.ToString() + "," + rand.Next().ToString() + ")";
+							// Add the row node to the table node
+							tablenode.Nodes.Add(tablerownode);
+					
+						}
+						// Add the table node
+						Toc1.Nodes.Add(tablenode);
+					}
+					// Update the tree
+					Toc1.Nodes[table_index].Expanded = true;
+					// Get the selected table for display
+					Toc1.SelectedNodeIndex = Toc1.Nodes[table_index].Nodes[row_index].GetNodeIndex();
+					Session["oldnode"] = Toc1.SelectedNodeIndex;
+				}
+			} 
+			catch(Exception exception)
+			{
+				callErrorPage("Identify Dialog - Error building Selection Tree.", exception);
+			}
+		}
+
+		/// <summary>
+		/// Update Display table with selected feature node.
+		/// Table has a row for each column in the DataSet table, with 
+		/// two cells. One cell is for the field name and the other is
+		/// for the value.
+		/// </summary>
+		private void updateDisplayTable() 
+		{
+			try 
+			{
+				TableRow tablerow;
+				TableCell tablecell1,tablecell2;
+				if (m_dataset!=null) 
+				{
+					string oldnode = Session["oldnode"] as String;
+					TocNode oldNode = Toc1.GetNodeFromIndex(oldnode);
+					if ( oldNode != null ) 
+						oldNode.Selected = false;
+
+					// Get the selected table for display
+					System.Data.DataTable table = m_dataset.Tables[table_index];
+					// Get the selected row for display
+					DataRow row = table.Rows[row_index];
+			
+					// Update the display table with the currently selected row node
+					System.Text.StringBuilder sb = new System.Text.StringBuilder();
+					// Loop through the columns
+					foreach (DataColumn col in table.Columns) 
+					{
+						if (row[col] != null) 
+						{
+							// Create a new html table row for each column
+							tablerow = new TableRow();
+							// Create a new html table cell for the column name
+							tablecell1 = new TableCell();
+							tablecell1.Font.Bold = true;
+							tablecell1.Font.Size=FontUnit.XSmall;
+							tablecell1.Text = col.ColumnName;
+							// create a new html table cell for the column value
+							tablecell2 = new TableCell();
+							tablecell2.Font.Size = FontUnit.XSmall;
+							tablecell2.Text = Convert.ToString(row[col]);
+							// Add the cells to the table row
+							tablerow.Cells.Add(tablecell1);
+							tablerow.Cells.Add(tablecell2);
+							// Add the row to the table
+							ShowTable.Rows.Add(tablerow);
+						}
+					}
+					string nindex = Toc1.Nodes[table_index].Nodes[row_index].GetNodeIndex();
+					if (!nindex.Equals("0.0")) 
+					{
+						Session["oldnode"] = nindex;
+						Toc1.SelectedNodeIndex = nindex;
+					}
+				} 
+				else 
+				{
+					// No data returned. Display appropriate message in table area
+					// Create a new table rows and celss to display text
+					// blank row
+					tablerow = new TableRow();
+					tablecell1 = new TableCell();
+					tablecell1.Font.Bold = true;
+					tablecell1.Font.Size=FontUnit.Medium;
+					tablecell1.Text = "&nbsp;";
+					tablecell1.ColumnSpan = 2;
+					tablerow.Cells.Add(tablecell1);
+					// Add the row to the table
+					ShowTable.Rows.Add(tablerow);
+					// first line
+					tablerow = new TableRow();
+					tablecell1 = new TableCell();
+					tablecell1.Font.Bold = true;
+					tablecell1.Font.Size=FontUnit.Medium;
+					tablecell1.Text = "No features were found at that location.";
+					tablecell1.ColumnSpan = 2;
+					tablerow.Cells.Add(tablecell1);
+					// Add the row to the table
+					ShowTable.Rows.Add(tablerow);
+					// next line
+					tablerow = new TableRow();
+					tablecell1 = new TableCell();
+					tablecell1.Font.Bold = true;
+					tablecell1.Font.Size=FontUnit.Medium;
+					tablecell1.Text = "Use another option from the Dropdown list to change the scope of selection.";
+					tablecell1.ColumnSpan = 2;
+					tablerow.Cells.Add(tablecell1);
+					// Add the row to the table
+					ShowTable.Rows.Add(tablerow);
+
+				}
+			}
+			catch(Exception exception)
+			{
+				callErrorPage("Identify Dialog - Error displaying data.", exception);
+			}		
+		}
+
+
+		/// <summary>
+		/// Checks passed identify parameters and sets dropdown list selection accordingly
+		/// </summary>
+		private void checkIdentifyOption() 
+		{
+			// Check session for current identify option and selected layer id
+			// If not present save default values: TopMost, -1
+			object obj = null;
+			obj = Session["idOption"];
+
+			if (obj == null) 
+				Session.Add("idOption",esriIdentifyOption.esriIdentifyTopmost);
+			else
+				idOption = (esriIdentifyOption)obj;
+
+			obj = Session["idLayer"];
+			if (obj==null) 
+				Session.Add("idLayer",-1);
+			else 
+				id_layer = Convert.ToInt32(obj);
+			// Check if these values were passed in
+			// If so, use these and save to session
+			string optval = Request.Params.Get("optvalue");
+			if (optval!=null) 
+			{
+				// Convert to enumeration to use with identify
+				// By default, id_layer will be set to -1, indicating no specific layer was selected in the list
+				switch (optval) 
+				{
+					case "_TopMost_":
+						idOption = esriIdentifyOption.esriIdentifyTopmost;
+						id_layer = -1;
+						break;
+					case "_AllLayers_":
+						idOption = esriIdentifyOption.esriIdentifyAllLayers;
+						id_layer = -1;
+						break;
+					case "_VisibleLayers_":
+						idOption = esriIdentifyOption.esriIdentifyVisibleLayers;
+						id_layer = -1;
+						break;
+					default:
+						// A layer is the selected option... use its id and
+						// set option to All Layers
+						idOption = esriIdentifyOption.esriIdentifyAllLayers;
+						id_layer = Convert.ToInt32(optval);
+						break;
+				}
+				// set dropdown selected value to optval
+				ddlIdentifyOption.SelectedValue = optval;
+				idOptionValue = optval;
+
+			}
+			else 
+			{
+				ddlIdentifyOption.SelectedValue = idOptionValue;
+			}
+			// If there is a selected layer, use it and set option to All Layers
+			if ((id_layer>-1) && (m_featurelayeridlist.Count>0)) 
+			{
+				idOption = esriIdentifyOption.esriIdentifyAllLayers;
+				optval = Convert.ToString(id_layer);
+				ddlIdentifyOption.SelectedValue = optval;
+			}
+			// Save new values to session
+			Session.Add("idOption",idOption);
+			Session.Add("idLayer",id_layer);
+			Session.Add("idOptionValue", idOptionValue);
+		}
+
+
+		/// <summary>
+		/// Adds a list of feature layers to the Option Dropdown list, if they are not already there
+		/// </summary>
+		private void updateOptionList() 
+		{
+			ListItem lci;
+			// Check if the list already has more than the actual 3 identify options
+			if ((m_featurelayeridlist.Count>0) && (ddlIdentifyOption.Items.Count<4))
+			{
+				int itemnum;
+				// Add the names of the feature layers
+				for (int i = 0; i < m_featurelayeridlist.Count; i++) 
+				{
+					itemnum = Convert.ToInt32(m_featurelayeridlist[i]);
+					lci = new ListItem(Convert.ToString(m_featurelayernamelist[i]),Convert.ToString(itemnum));
+					ddlIdentifyOption.Items.Add(lci);
+				}
+
+			}
+			// If id_layer is not -1, set the selected value to that value
+			if (id_layer>-1) ddlIdentifyOption.SelectedValue = Convert.ToString(id_layer);
+		}
+
+
+		/// <summary>
+		/// Executes the identify, using the user's click location
+		/// </summary>
+		private void ExecuteIdentify(int inX, int inY) 
+		{
+			try 
+			{
+				IServerContext m_ctx = null; 
+				WebMap webMap = null;
+				object o = Session[m_contextname];
+				if (o!=null) 
+				{
+					// ServerContext saved in session for non-pooled serverobject.
+					// Create WebMap with it.
+					m_ctx = o as IServerContext;
+					webMap = new WebMap(m_ctx, m_host, m_dataframe);
+				}
+				else 
+				{
+					// No ServerContext in session, so this is a pooled serverobject.
+					// Create WebMap and set necessary parameters to execute identify
+					webMap = new WebMap(new ESRI.ArcGIS.Server.WebControls.ServerConnection(m_host,true),m_serverobject,m_dataframe);
+					m_ctx = webMap.ServerContext;
+					webMap.ManageLifetime(m_ctx);
+				}
+				ImageDescriptor imgd = new ImageDescriptor(WebImageFormat.BMP,m_width,m_height);
+				// get MapDescription session name
+				string MDSessionName = "";
+				o =Session["MapDescName"];				
+				//MapDescription mapD;
+				if (o!=null) 
+				{
+					MDSessionName = Convert.ToString(o);
+				}
+				using (webMap)
+				{
+					// get MapDescription from session
+					if (MDSessionName!="") 
+					{
+						o = Session[MDSessionName];
+						if (o!=null) webMap.MapDescription = m_ctx.LoadObject(Convert.ToString(o)) as IMapDescription;
+					}
+					webMap.ImageDescriptor = imgd;
+					webMap.Extent = m_extent;
+
+					// Clear out any dataset held in Session
+					Session.Remove("id");
+					// Convert screen point to map point
+					IPoint pt = webMap.ToMapPoint(inX,inY);
+					webMap.ManageLifetime(pt);
+
+					// Build the array of layers for the identify argument
+					ILongArray layerIds = m_ctx.CreateObject("esriSystem.LongArray") as ILongArray; 
+					webMap.ManageLifetime(layerIds);
+
+					if (id_layer>-1) 
+					{
+						// user has selected a single layer, so limit the identify to that layer
+						layerIds.Add(id_layer);
+					} 
+					else 
+					{
+						// build a list of all the feature layers
+						for (int z=0;z<m_featurelayeridlist.Count;z++) 
+						{
+							layerIds.Add(Convert.ToInt32(m_featurelayeridlist[z]));
+						}
+					}
+					// Get dataset using Identify method
+					m_dataset = webMap.Identify(pt, 5, idOption, layerIds);
+					if ( m_dataset != null )
+					{
+						// Dataset returned...
+						// Insert dataset into Session for use by Identify results page
+						Session.Add("id", m_dataset);
+					} 
+				}	
+			}
+			catch(Exception exception)
+			{
+				callErrorPage("Identify Dialog - Error executing Identify request.", exception);
+			}
+		}
+
+
+		/// <summary>
+		/// Sets up the list of feature layers to be displayed in the tree.
+		/// </summary>
+		private void setupDisplayList() 
+		{
+			try 
+			{
+				IServerContext m_ctx = null; 
+				WebMap webMap = null;
+				object o = Session[m_contextname];
+				if (o!=null) 
+				{
+					// ServerContext saved in session for non-pooled serverobject.
+					// Create WebMap with it.
+					m_ctx = o as IServerContext;
+					webMap = new WebMap(m_ctx, m_host, m_dataframe);
+				}
+				else 
+				{
+					// No ServerContext in session, so this is a pooled serverobject.
+					// Just create a new WebMap.
+					webMap = new WebMap(new ESRI.ArcGIS.Server.WebControls.ServerConnection(m_host,true),m_serverobject,m_dataframe);
+				}
+				ImageDescriptor imgd = new ImageDescriptor(WebImageFormat.BMP,m_width,m_height);
+
+				using (webMap)
+				{
+					webMap.ImageDescriptor = imgd;
+					// Get a list of display field names for identify
+					m_displaylist = new ArrayList();
+					// Get a list of feature layers also to match displaylist
+					m_featurelayeridlist = new ArrayList();
+					m_featurelayernamelist = new ArrayList();
+					//Retrieve MapServer from WebMap
+
+					IMapServer mapServer = webMap.MapServer;
+					IMapServerObjects mso = (IMapServerObjects) mapServer;
+					int lay_id;
+					// Preprocess layer display fields for Identify
+					// Loop through the layers
+					for (int i = 0; i < webMap.MapDescription.LayerDescriptions.Count; i++) 
+					{
+						// Get layer
+						ILayer layer = mso.get_Layer(webMap.DataFrame,i);
+						webMap.ManageLifetime(layer);
+
+						// See if it is a feature layer
+						IFeatureLayer featureLayer = layer as FeatureLayer;
+						webMap.ManageLifetime(featureLayer);
+
+						if (featureLayer != null) 
+						{
+							// It's a feature layer... get the DisplayField and add it to the list
+							m_displaylist.Add(featureLayer.DisplayField);
+							// add this layer to the list of available layers for identify
+							lay_id =  webMap.MapDescription.LayerDescriptions.get_Element(i).ID;
+							m_featurelayeridlist.Add(lay_id);
+							m_featurelayernamelist.Add(webMap.LayerNameFromID(lay_id));
+								
+						} 
+						else  
+						{
+							// Not a feature layer... just add a placeholder in the list for the layer
+							m_displaylist.Add("*****");
+							//m_featurelayerlist.Add("*****");
+						}
+					}
+					// Save display field list to Session
+					Session.Add("displaylist",m_displaylist);
+					Session.Add("featurelayeridlist",m_featurelayeridlist);
+					Session.Add("featurelayernamelist",m_featurelayernamelist);
+				}
+			}
+			catch(Exception exception)
+			{
+				callErrorPage("Identify Dialog - Error building Feature Layer List.", exception);
+			}
+		}
+
+		#endregion
+
+		#region Web Form Designer generated code
+		override protected void OnInit(EventArgs e)
+		{
+			//
+			// CODEGEN: This call is required by the ASP.NET Web Form Designer.
+			//
+			InitializeComponent();
+			base.OnInit(e);
+		}
+		
+		/// <summary>
+		/// Required method for Designer support - do not modify
+		/// the contents of this method with the code editor.
+		/// </summary>
+		private void InitializeComponent()
+		{    
+
+		}
+		#endregion
+	}
+}

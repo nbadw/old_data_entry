@@ -1,0 +1,29 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="dsqryESAObservations" targetNamespace="http://www.tempuri.org/dsqryESAObservations.xsd" xmlns:mstns="http://www.tempuri.org/dsqryESAObservations.xsd" xmlns="http://www.tempuri.org/dsqryESAObservations.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:element name="dsqryESAObservations" msdata:IsDataSet="true">
+    <xs:complexType>
+      <xs:choice maxOccurs="unbounded">
+        <xs:element name="qryESAObservations">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="AgencyCd" type="xs:string" minOccurs="0" />
+              <xs:element name="AgencySiteID" type="xs:string" minOccurs="0" />
+              <xs:element name="AquaticActivityID" type="xs:int" minOccurs="0" />
+              <xs:element name="AquaticSiteID" type="xs:int" minOccurs="0" />
+              <xs:element name="Date" type="xs:string" minOccurs="0" />
+              <xs:element name="DrainageCd" type="xs:string" minOccurs="0" />
+              <xs:element name="EnvObservationID" msdata:AutoIncrement="true" type="xs:int" minOccurs="0" />
+              <xs:element name="FishPassageObstructionInd" type="xs:boolean" minOccurs="0" />
+              <xs:element name="Observation" type="xs:string" minOccurs="0" />
+              <xs:element name="ObservationGroup" type="xs:string" minOccurs="0" />
+              <xs:element name="OtherObservation" type="xs:string" minOccurs="0" />
+              <xs:element name="PipeSize_cm" type="xs:int" minOccurs="0" />
+              <xs:element name="WaterBodyID" type="xs:int" minOccurs="0" />
+              <xs:element name="WaterBodyName" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

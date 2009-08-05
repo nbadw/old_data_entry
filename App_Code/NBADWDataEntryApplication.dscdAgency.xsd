@@ -1,0 +1,22 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="dscdAgency" targetNamespace="http://www.tempuri.org/dscdAgency.xsd" xmlns:mstns="http://www.tempuri.org/dscdAgency.xsd" xmlns="http://www.tempuri.org/dscdAgency.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:element name="dscdAgency" msdata:IsDataSet="true">
+    <xs:complexType>
+      <xs:choice maxOccurs="unbounded">
+        <xs:element name="cdAgency">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Agency" type="xs:string" minOccurs="0" />
+              <xs:element name="AgencyCd" type="xs:string" />
+              <xs:element name="DataRulesInd" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+    <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:cdAgency" />
+      <xs:field xpath="mstns:AgencyCd" />
+    </xs:unique>
+  </xs:element>
+</xs:schema>
